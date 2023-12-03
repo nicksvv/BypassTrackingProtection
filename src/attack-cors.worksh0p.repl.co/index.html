@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Cross-origin request Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f7f7f7;
+    }
+
+    #main-container {
+      display: flex;
+      flex-direction: row;
+      margin-top: 10px;
+      justify-content: flex-start;
+    }
+
+    #buttons-container {
+      margin-left: 10%;
+    }
+
+    button {
+      display: block;
+      padding: 10px 20px;
+      margin: 10px 0;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background-color: #008CBA;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #007B9A;
+    }
+
+    #results-container {
+      margin-left: 5%;
+      width: 70%;
+    }
+
+    .message {
+      margin: 10px 0;
+      padding: 20px;
+      border-radius: 5px;
+      background-color: #f1f1f1;
+      color: #333;
+      text-align: center;
+    }
+  </style>
+  <script>
+    function handleCorsRequest(type) {
+      let url = "https://vuln-cors.nicksv.com";
+      let options = {
+        method: "GET",
+        mode: "cors",
+      };
+
+      if (type === "withCredentials") {
+        options.credentials = "include";
+      }
+
+      fetch(url, options)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          document.getElementById(`message-${type}`).textContent = 'Request succeeded with JSON response: ' + JSON.stringify(data);
+        })
+        .catch(error => {
+          document.getElementById(`message-${type}`).textContent = 'Request failed: ' + error.message;
+        });
+    }
+  </script>
+</head>
+
+<body>
+  <div id="main-container">
+    <div id="buttons-container">
+      <button onclick="handleCorsRequest('noCredentials')">Cross-origin request Without Credentials</button>
+      <button onclick="handleCorsRequest('withCredentials')">Cross-origin request With Credentials</button>
+    </div>
+    <div id="results-container">
+      <div id="message-noCredentials" class="message"></div>
+      <div id="message-withCredentials" class="message"></div>
+    </div>
+  </div>
+</body>
+
+</html>

